@@ -1,44 +1,40 @@
 import React from 'react';
 
-import { handleSearch } from '../redux/actions';
+import actions from '../redux/actions';
 
 class Navbar extends React.Component {
-
-    componentDidMount() {
-
-        const options = {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json',
-                'X-RapidAPI-Key': 'ef01c1007amsha74b92019e119afp1ced96jsn6379567e2e25',
-                'X-RapidAPI-Host': 'trains.p.rapidapi.com'
-            },
-            body: '{"search":"Rajdhani"}'
-        };
-        
-        fetch('https://trains.p.rapidapi.com/', options)
-            .then(response => response.json())
-            .then(response => console.log(response))
-            .catch(err => console.error(err));
-        
-        
-    }
 
     getTrainDetails = () => {
         
         let trainName= document.getElementById('trainName').value;
         let { store } = this.props;
 
-        store.dispatch(handleSearch(trainName));
+        store.dispatch(actions.handleSearch(trainName));
         
+    }
+
+    allTrainSelected = () => {
+        let { store } = this.props;
+
+        store.dispatch(actions.allTrainTabSelected());
+
         store.subscribe(() => {
-            console.log('value inside store: ', store.getState());
+            console.log('after: ', store.getState());
         })
-        
+    }
+
+    bookmarkTrainSelected = () => {
+        let { store } = this.props;
+
+        store.dispatch(actions.bookmarkTabSelected());
+
+        store.subscribe(() => {
+            console.log('after: ', store.getState());
+        })
     }
     
     render() {
-        
+        const { store } = this.props;
         return(
             <React.Fragment>
                 <div style = {style.background}>
@@ -46,6 +42,16 @@ class Navbar extends React.Component {
                     <div style = {style.search}>
                         <input id='trainName' style = {style.searchInput} placeholder='Search'/>
                         <img style = {style.searchImg} src='https://cdn-icons-png.flaticon.com/512/3104/3104567.png' onClick={this.getTrainDetails}/>
+                    </div>
+                </div>
+                <div style = {style.subMenu}>
+                    <div onClick = {() => this.allTrainSelected()} style = {style.subMenuBorder}>
+                        { store.getState().isBookmarkSelected && <p>All Trains</p>}
+                        { !store.getState().isBookmarkSelected && <p><b>All Trains</b></p>}
+                    </div>
+                    <div onClick = {() => this.bookmarkTrainSelected()} style = {style.subMenuBorder}>
+                        { store.getState().isBookmarkSelected && <p><b>Bookmark</b></p>}
+                        { !store.getState().isBookmarkSelected && <p>Bookmark</p>}
                     </div>
                 </div>
             </React.Fragment>
@@ -88,6 +94,21 @@ const style = {
         padding: 5,
         marginLeft: 3,
         cursor: 'pointer'
+    },
+
+    subMenu: {
+        backgroundColor: 'pink',
+        display: 'flex'
+    },
+    
+    subMenuBorder: {
+        display: 'flex', 
+        justifyContent: 'center',
+        padding: 10,
+        cursor: 'pointer',
+        width: '50vw',
+        border: '2px solid black', 
+        margin: 'auto'
     }
 }
 

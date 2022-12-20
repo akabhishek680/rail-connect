@@ -1,6 +1,6 @@
 import types from './types';
 
-export function handleSearch(trainName) {
+function handleSearch(trainName) {
 
     const options = {
         method: 'POST',
@@ -26,5 +26,33 @@ export function handleSearch(trainName) {
             )
             .catch(err => console.error(err));
     }
-    
+
+}
+
+function bookmarkTrain(trainDetail) {
+    return {
+        type: types.ADD_TO_BOOKMARK,
+        payload: trainDetail
+    }
+}
+
+function bookmarkTabSelected() {
+    return {
+        type: types.BOOKMARK_SELECTED,
+        payload: true
+    }
+}
+
+function allTrainTabSelected() {
+    return {
+        type: types.ALL_TRAIN_SELECTED,
+        payload: false
+    }
+}
+
+export default {
+    handleSearch,
+    bookmarkTrain,
+    bookmarkTabSelected,
+    allTrainTabSelected
 }

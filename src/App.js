@@ -10,8 +10,13 @@ class App extends React.Component {
     const { store } = this.props;
 
     store.subscribe(() => {
-      this.trainDetails = store.getState();
-      console.log('traindetail value: ', this.trainDetails);
+      
+      if(store.getState().isBookmarkSelected) {
+        this.trainDetails = store.getState().bookmarked_trains;
+      }
+      else {
+        this.trainDetails = store.getState().all_trains;
+      }
       this.forceUpdate();
     })
   }
@@ -24,7 +29,7 @@ class App extends React.Component {
         <Navbar store={store}/>
         {
           this.trainDetails.map((trainDetail) => {
-            return <Train trainDetail={trainDetail} key={trainDetail.train_num}/>
+            return <Train store={store} trainDetail={trainDetail} key={trainDetail.train_num}/>
           })
         }
         

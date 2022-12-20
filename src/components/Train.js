@@ -1,13 +1,24 @@
 import React from 'react';
+import actions from '../redux/actions';
 
 class Train extends React.Component {
+
+
+    addToBookmark(trainDetail) {
+        const { store } = this.props;
+        
+        store.dispatch(actions.bookmarkTrain(trainDetail));
+
+        store.subscribe(() => {
+            console.log('after: ', store.getState());
+        })
+    }
 
     render() {
 
         const { train_num, name, train_from, train_to } = this.props.trainDetail;
         const { arriveTime, departTime, classes } = this.props.trainDetail.data;
 
-        console.log('props value: ', this.props);
         return (
             <React.Fragment>
                 <div style = {style.train}>
@@ -15,10 +26,15 @@ class Train extends React.Component {
                         <img style = {style.trainImg} src = 'railImg.png'/>
                     </div>
                     <div style= {style.trainDetails} >
-                        <strong>Train Name: {name}</strong>
-                        <p><b>Train Number:</b> {train_num} <b>From:</b> {train_from} <b>To:</b> {train_to}</p>
-                        <p><b>Arrival Time:</b> {arriveTime} <b>Departure Time:</b> {departTime}</p>
-                        <p><b>Classes: </b> {classes} </p> 
+                        <div>
+                            <strong>Train Name: {name}</strong>
+                            <p><b>Train Number:</b> {train_num} <b>From:</b> {train_from} <b>To:</b> {train_to}</p>
+                            <p><b>Arrival Time:</b> {arriveTime} <b>Departure Time:</b> {departTime}</p>
+                            <p><b>Classes: </b> {classes} </p> 
+                        </div>
+                        <div style = {style.bookmarkBtnPos}>
+                            <button  style = {style.bookmarkBtn} onClick={() => this.addToBookmark(this.props.trainDetail)}>Bookmark this Train</button>
+                        </div>
                     </div>
                 </div>
             </React.Fragment>
@@ -32,7 +48,7 @@ const style = {
         margin: '2rem',
         display: 'flex',
         flexDirection: 'row',
-        
+        flexWrap: 'wrap'
     },
 
     trainImg: {
@@ -40,7 +56,23 @@ const style = {
     },
 
     trainDetails: {
-        marginLeft: 20
+        marginLeft: 20,
+        display: 'flex',
+        justifyContent: 'space-between',
+        width: '50vw',
+        flexWrap: 'wrap'
+    },
+
+    bookmarkBtnPos: {
+        display: 'flex',
+        alignSelf: 'flex-end'
+    },
+
+    bookmarkBtn: {
+        padding: 10,
+        cursor: 'pointer',
+        backgroundColor: 'lightgreen',
+        fontWeight: 'bold'
     }
 }
 
