@@ -1,40 +1,35 @@
 import React from 'react';
-
 import actions from '../redux/actions';
+import { connect } from 'react-redux';
 
 class Navbar extends React.Component {
 
     getTrainDetails = () => {
         
         let trainName= document.getElementById('trainName').value;
-        let { store } = this.props;
+        const { dispatch } = this.props;
 
-        store.dispatch(actions.handleSearch(trainName));
+        dispatch(actions.handleSearch(trainName));
         
     }
 
     allTrainSelected = () => {
-        let { store } = this.props;
+        const { dispatch } = this.props;
 
-        store.dispatch(actions.allTrainTabSelected());
-
-        store.subscribe(() => {
-            console.log('after: ', store.getState());
-        })
+        dispatch(actions.allTrainTabSelected());
+        
     }
 
     bookmarkTrainSelected = () => {
-        let { store } = this.props;
+        const { dispatch } = this.props;
 
-        store.dispatch(actions.bookmarkTabSelected());
+        dispatch(actions.bookmarkTabSelected());
 
-        store.subscribe(() => {
-            console.log('after: ', store.getState());
-        })
     }
     
     render() {
-        const { store } = this.props;
+        const { isBookmarkSelected } = this.props;
+        
         return(
             <React.Fragment>
                 <div style = {style.background}>
@@ -46,12 +41,12 @@ class Navbar extends React.Component {
                 </div>
                 <div style = {style.subMenu}>
                     <div onClick = {() => this.allTrainSelected()} style = {style.subMenuBorder}>
-                        { store.getState().isBookmarkSelected && <p>All Trains</p>}
-                        { !store.getState().isBookmarkSelected && <p><b>All Trains</b></p>}
+                        { isBookmarkSelected && <p>All Trains</p>}
+                        { !isBookmarkSelected && <p><b>All Trains</b></p>}
                     </div>
                     <div onClick = {() => this.bookmarkTrainSelected()} style = {style.subMenuBorder}>
-                        { store.getState().isBookmarkSelected && <p><b>Bookmark</b></p>}
-                        { !store.getState().isBookmarkSelected && <p>Bookmark</p>}
+                        { isBookmarkSelected && <p><b>Bookmark</b></p>}
+                        { !isBookmarkSelected && <p>Bookmark</p>}
                     </div>
                 </div>
             </React.Fragment>
@@ -112,4 +107,13 @@ const style = {
     }
 }
 
-export default Navbar;
+function mapStateToProps(state) {
+
+    return {
+        isBookmarkSelected: state.isBookmarkSelected
+    }
+}
+
+const connectedNavbarComponent = connect(mapStateToProps)(Navbar);
+
+export default connectedNavbarComponent;

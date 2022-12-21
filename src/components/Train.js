@@ -1,17 +1,14 @@
 import React from 'react';
 import actions from '../redux/actions';
+import { connect } from 'react-redux';
 
 class Train extends React.Component {
 
 
     addToBookmark(trainDetail) {
-        const { store } = this.props;
+        const { dispatch } = this.props;
         
-        store.dispatch(actions.bookmarkTrain(trainDetail));
-
-        store.subscribe(() => {
-            console.log('after: ', store.getState());
-        })
+        dispatch(actions.bookmarkTrain(trainDetail));
     }
 
     render() {
@@ -76,4 +73,15 @@ const style = {
     }
 }
 
-export default Train;
+function mapStateToProps(state) {
+
+    return {
+        all_trains: state.all_trains,
+        bookmarked_trains: [],
+        isBookmarkSelected: false
+    }
+}
+
+const connectedTrainComponent = connect(mapStateToProps)(Train);
+
+export default connectedTrainComponent;
